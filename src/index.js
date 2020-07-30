@@ -1,8 +1,8 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { ButtonToolbar, Dropdown, DropdownButton } from 'react-bootstrap';
-
+import {Dropdown, DropdownButton } from 'react-bootstrap';
 
 //got this from a tutorial
 //returns a clone of the array that we can manipulate
@@ -10,6 +10,8 @@ import { ButtonToolbar, Dropdown, DropdownButton } from 'react-bootstrap';
 function arrClone(arr) {
 	return JSON.parse(JSON.stringify(arr));
 }
+
+//box component
 
 class Box extends React.Component {
 	toggleBox = () => {
@@ -29,7 +31,7 @@ class Box extends React.Component {
 
 class Grid extends React.Component {
 	render() {
-		const width = (this.props.cols * 16);
+		const width = (this.props.cols * 14);
 		var rowsArr = [];
 
 		var boxClass = "";
@@ -109,24 +111,27 @@ class Main extends React.Component {
 		});
 	}
 
-  //clear the interval
+  //clear the interval  
   //execute the play function
 	playHandler= () => {
 		clearInterval(this.intervalId);
 		this.intervalId = setInterval(this.play, this.speed);
 	}
 
-  //clear the interval
+  //stops the play function
 	pauseHandler = () => {
 		clearInterval(this.intervalId);
 	}
 
-
+  //change the speed to the slow preset
+  //run the play function
 	slow = () => {
 		this.speed = 1000;
 		this.playHandler();
 	}
 
+  //change the speed to the fast preset
+  //run the play function
 	fast = () => {
 		this.speed = 100;
 		this.playHandler();
@@ -138,7 +143,8 @@ class Main extends React.Component {
 		this.setState({
 			gridFull: grid,
 			generation: 0
-		});
+    });
+    clearInterval(this.intervalId);
 	}
 
   //switch statement for grid sizes
@@ -161,7 +167,7 @@ class Main extends React.Component {
 	}
 
   //this is the algorithm itself
-  
+  //loops through each element and checks it against the following rules
   //Any live cell with fewer than two live neighbours dies
   //Any live cell with two or three live neighbours lives on
   //Any live cell with more than three live neighbours dies
@@ -196,44 +202,62 @@ class Main extends React.Component {
 	render() {
 		return (
 			<div className="mainDiv">
-				<h1>The Game of Life</h1>
-				<div>
-          <button className="btn btn-default" onClick={this.playHandler}>
-						Play
-					</button>
-					<button className="btn btn-default" onClick={this.pauseHandler}>
-					  Pause
-					</button>
-					<button className="btn btn-default" onClick={this.clear}>
-					  Clear
-					</button>
-					<button className="btn btn-default" onClick={this.slow}>
-					  Slow
-					</button>
-					<button className="btn btn-default" onClick={this.fast}>
-					  Fast
-					</button>
-					<button className="btn btn-default" onClick={this.seed}>
-					  Seed
-					</button>
-        </div>
-
+				
+        <h1>The Game of Life</h1>
+				
 				<Grid
 					gridFull={this.state.gridFull}
 					rows={this.rows}
 					cols={this.cols}
 				  toggleBox={this.toggleBox}
 				/>
+        
+        <div className = "top buttons">
+          <button className="buttn" onClick={this.playHandler}>
+						Play
+					</button>
+					<button className="buttn" onClick={this.pauseHandler}>
+					  Pause
+					</button>
+					<button className="buttn" onClick={this.clear}>
+					  Clear
+					</button>
+					<button className="buttn" onClick={this.slow}>
+					  Slow
+					</button>
+					<button className="buttn" onClick={this.fast}>
+					  Fast
+					</button>
+					<button className="buttn" onClick={this.seed}>
+					  Seed
+					</button>
+        </div>
         <DropdownButton
+            bsStyle = "drpdwn"
 						title="Grid Size"
-						id="size-menu"
+            id="size-menu"
 						onSelect={this.handleSelect}
 					>
-						<Dropdown.Item eventKey="1">20x10</Dropdown.Item>
-						<Dropdown.Item eventKey="2">50x30</Dropdown.Item>
-						<Dropdown.Item eventKey="3">70x50</Dropdown.Item>
-					</DropdownButton>
+						<Dropdown.Item className = "sizes" eventKey="1">20x10</Dropdown.Item>
+						<Dropdown.Item className = "sizes" eventKey="2">50x30</Dropdown.Item>
+						<Dropdown.Item className = "sizes" eventKey="3">70x50</Dropdown.Item>
+				</DropdownButton>
 				<h2>Generations: {this.state.generation}</h2>
+        <div className= "info">
+          <h3>About the algorithm</h3>
+          <p>
+            Conway's game of life is a cellular automaton that operates on four simple rules:
+          </p>
+          <ul>
+            <li>Any live cell with fewer than two live neighbours dies</li>
+            <li>Any live cell with two or three live neighbours lives on</li>
+            <li>Any live cell with more than three live neighbours dies</li>
+            <li>Any dead cell with exactly three live neighbours becomes a live cell</li>
+          </ul>
+          <p>
+            From these simple rules, many very interesting patterns emerge.
+          </p>
+        </div>
 			</div>
 		);
 	}
